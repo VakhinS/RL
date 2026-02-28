@@ -1,21 +1,34 @@
 #STATE SPACE
+min_f_by_np = {
+    (5, "S"): 0,
+    (4, "S"): 1, (4, "F"): 3,
+    (3, "S"): 2, (3, "F"): 4,
+    (2, "S"): 3, (2, "F"): 5,
+    (1, "S"): 4, (1, "F"): 6,
+    (0, "S"): 5, (0, "F"): 7,
+}
+
+max_f_by_np = {
+    (5, "S"): 0,
+    (4, "S"): 2, (4, "F"): 4,
+    (3, "S"): 6, (3, "F"): 9,
+    (2, "S"): 9, (2, "F"): 9,
+    (1, "S"): 9, (1, "F"): 9,
+    (0, "S"): 9, (0, "F"): 9,
+}
 
 def is_valid_state(f, n, p):
-    # checks if the given state is valid
     if not (0 <= f <= 9 and 0 <= n <= 5 and p in ["S", "F"]):
         return False
     if p == "F" and n == 5:
         return False
-    k = 5 - n  # actions taken so far
-    min_f = k
-    if f < min_f:
+    min_f = min_f_by_np.get((n, p), 0)
+    max_f = max_f_by_np.get((n, p), 9)
+    if f < min_f or f > max_f:
         return False
-    if n == 5 and f != 0:
-        return False
-    if n == 4 and f > 4:
+    if n == 3 and p == "F" and f == 7:
         return False
     return True
-
 # Build all valid states using nested loops 
 all_states = []
 for f in range(10):
@@ -134,3 +147,4 @@ for t in range(1, 6):
 # 4. INITIAL STATE RESULT
 print("OPTIMAL VALUE FROM INITIAL STATE (0, 5, S):")
 initial = (0, 5, "S")
+print("  V*(f=0, n=5, p=S) = " + str(round(V[5].get(initial, 0), 3)))
